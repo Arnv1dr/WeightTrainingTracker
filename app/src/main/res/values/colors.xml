@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="blue">#2377AE</color>
+    <color name="custom_blue_grey">#607D8B</color>
+    <color name="custom_deep_teal">#004D40</color>
+    <color name="darker_blue">#79007BCC</color>
+    <color name="darker_blue_nontransparent">#175279</color>
+
+    <color name="background_color">#000000</color> <!-- Black -->
+    <color name="grey">#121212</color> <!-- Dark Grey -->
+    <color name="light_grey">#F1F1F1</color>
+    <color name="medium_grey">#6E6E6E</color>
+    <color name="text_color">#FFFFFF</color> <!-- White -->
+    <color name="accent_color">#BB86FC</color>
+    <color name="old_blue">#0065A6</color>
+</resources>

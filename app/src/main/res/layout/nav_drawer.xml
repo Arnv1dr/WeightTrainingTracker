@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_drawer"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:visibility="gone"
+    android:background="@color/darker_blue_nontransparent">
+
+    <Button
+        android:id="@+id/home_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/blue"
+        android:textColor="@color/white"
+        android:text="Home" />
+
+    <Button
+        android:id="@+id/workouts_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/blue"
+        android:textColor="@color/white"
+        android:text="Workouts" />
+
+    <Button
+        android:id="@+id/statistics_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/blue"
+        android:textColor="@color/white"
+        android:text="Statistics" />
+
+    <Button
+        android:id="@+id/goals_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/blue"
+        android:textColor="@color/white"
+        android:text="Goals" />
+</LinearLayout>

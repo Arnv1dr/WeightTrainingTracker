@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimary"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".CalendarActivity">
+
+    <RelativeLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <CalendarView
+            android:id="@+id/calendar_view"
+            android:theme="@style/CustomCalendarMonth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="52dp"
+            android:dateTextAppearance="@color/medium_grey"
+            android:weekDayTextAppearance="@color/medium_grey"
+            android:focusedMonthDateColor="@color/black"/>
+
+        <Spinner
+            android:id="@+id/workout_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/calendar_view"
+            android:layout_marginTop="16dp" />
+
+        <LinearLayout
+            android:id="@+id/set_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/workout_spinner"
+            android:layout_marginTop="16dp">
+
+            <!-- Example of a set input form -->
+            <LinearLayout
+                android:id="@+id/set_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/weight_1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Weight (kg)"
+                    android:textColorHint="@color/medium_grey"
+                    android:textColor="@color/medium_grey"
+                    android:inputType="numberDecimal" />
+
+                <EditText
+                    android:id="@+id/reps_1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Reps"
+                    android:textColorHint="@color/medium_grey"
+                    android:textColor="@color/medium_grey"
+                    android:inputType="number" />
+            </LinearLayout>
+
+            <!-- Add more sets dynamically as needed -->
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/set_container"
+            android:layout_marginTop="16dp"
+            app:backgroundTint="@color/darker_blue_nontransparent"
+            android:textColor="@color/white"
+            android:text="Save" />
+
+        <Button
+            android:id="@+id/view_workout_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="16dp"
+            app:backgroundTint="@color/darker_blue_nontransparent"
+            android:textColor="@color/white"
+            android:text="View Workout" />
+
+        <Button
+            android:id="@+id/delete_last_set_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toStartOf="@id/view_workout_button"
+            android:layout_margin="16dp"
+            app:backgroundTint="@color/darker_blue_nontransparent"
+            android:textColor="@color/white"
+            android:text="Delete Last Set" />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/open_nav_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="16dp"
+        app:backgroundTint="@color/darker_blue_nontransparent"
+        android:textColor="@color/white"
+        android:text="Menu" />
+
+    <include layout="@layout/nav_drawer" />
+
+</RelativeLayout>
+

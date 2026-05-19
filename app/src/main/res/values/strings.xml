@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Weight Training Tracker</string>
+    <string name="workouts">Workouts</string>
+    <string name="stats">Statistics</string>
+    <string name="menu">Menu</string>
+</resources>
