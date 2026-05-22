@@ -42,7 +42,7 @@
             android:layout_below="@id/workout_spinner"
             android:layout_marginTop="16dp">
 
-            <!-- Example of a set input form -->
+            
             <LinearLayout
                 android:id="@+id/set_1"
                 android:layout_width="match_parent"
@@ -71,7 +71,7 @@
                     android:inputType="number" />
             </LinearLayout>
 
-            <!-- Add more sets dynamically as needed -->
+            
 
         </LinearLayout>
 

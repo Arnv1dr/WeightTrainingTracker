@@ -22,13 +22,13 @@
 
     <include layout="@layout/nav_drawer" />
 
-    <!-- Workout Spinner -->
+   
     <Spinner
         android:id="@+id/workout_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <!-- Goal Input Section -->
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
         android:gravity="center_vertical"
         android:layout_marginTop="16dp">
 
-        <!-- Goal Input Field -->
+       
         <EditText
             android:id="@+id/goal_input"
             android:layout_width="0dp"
@@ -46,7 +46,7 @@
             android:textColor="@color/text_color"
             android:inputType="numberDecimal" />
 
-        <!-- Save Button -->
+        
         <Button
             android:id="@+id/save_goal_button"
             android:layout_width="wrap_content"
@@ -56,7 +56,7 @@
             android:text="Save" />
     </LinearLayout>
 
-    <!-- Display Saved Goal -->
+    
     <TextView
         android:id="@+id/saved_goal_text"
         android:layout_width="wrap_content"
@@ -64,7 +64,7 @@
         android:text="Current Goal: --%"
         android:layout_marginTop="16dp" />
 
-    <!-- Weekly Volume Change Display -->
+    
     <TextView
         android:id="@+id/volume_change_text"
         android:layout_width="match_parent"
@@ -72,7 +72,7 @@
         android:text="Weekly Volume Change: --%"
         android:layout_marginTop="16dp" />
 
-    <!-- Week Selection Section -->
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -80,14 +80,14 @@
         android:gravity="center_vertical"
         android:layout_marginTop="16dp">
 
-        <!-- Week 1 Spinner -->
+        
         <Spinner
             android:id="@+id/week1_spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <!-- Week 2 Spinner -->
+       
         <Spinner
             android:id="@+id/week2_spinner"
             android:layout_width="0dp"
@@ -95,7 +95,7 @@
             android:layout_weight="1"
             android:layout_marginStart="8dp" />
 
-        <!-- Compare Button -->
+        
         <Button
             android:id="@+id/compare_button"
             android:layout_width="wrap_content"
@@ -106,7 +106,7 @@
             android:layout_marginStart="8dp" />
     </LinearLayout>
 
-    <!-- Comparison Result Display -->
+    
     <TextView
         android:id="@+id/comparison_result_text"
         android:layout_width="match_parent"

@@ -25,11 +25,11 @@ public class BaseActivity extends AppCompatActivity {
     protected void setupNavigationDrawer() {
         navDrawer = findViewById(R.id.nav_drawer);
 
-        // Handle window insets to adjust for system bars
+        // Handles window insets to adjust for system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return WindowInsetsCompat.CONSUMED; // Ensure the correct return type
+            return WindowInsetsCompat.CONSUMED; // Ensures the correct return type
         });
 
         Button openNavButton = findViewById(R.id.open_nav_button);
@@ -43,6 +43,7 @@ public class BaseActivity extends AppCompatActivity {
 
         // Find the Workouts button in the nav drawer
         Button workoutsButton = findViewById(R.id.workouts_button);
+        // Handle Workouts button click
         workoutsButton.setOnClickListener(v -> {
             Intent intent = new Intent(BaseActivity.this, CalendarActivity.class);
             startActivity(intent);
@@ -55,16 +56,16 @@ public class BaseActivity extends AppCompatActivity {
             Intent intent = new Intent(BaseActivity.this, StatisticsActivity.class);
             startActivity(intent);
         });
-        // Find the Statistics button in the nav drawer
+        // Find the Home button in the nav drawer
         Button homeButton = findViewById(R.id.home_button);
-        // Handle Statistics button click
+        // Handle Home button click
         homeButton.setOnClickListener(v -> {
             Intent intent = new Intent(BaseActivity.this, MainActivity.class);
             startActivity(intent);
         });
-        // Find the Statistics button in the nav drawer
+        // Find the Goals button in the nav drawer
         Button goalsButton = findViewById(R.id.goals_button);
-        // Handle Statistics button click
+        // Handle Goals button click
         goalsButton.setOnClickListener(v -> {
             Intent intent = new Intent(BaseActivity.this, GoalsActivity.class);
             startActivity(intent);

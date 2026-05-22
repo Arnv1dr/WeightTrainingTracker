@@ -27,21 +27,21 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Apply the theme before setting the content view
+        // Applies the theme before setting the content view
         ThemeSetter.applyTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         navDrawer = findViewById(R.id.nav_drawer);
 
-        // Handle window insets to adjust for system bars
+        // Handles window insets to adjust for system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return WindowInsetsCompat.CONSUMED; // Ensure the correct return type
+            return WindowInsetsCompat.CONSUMED; // Ensures the correct return type
         });
 
-        // Set up the theme toggle button
+        // Sets up the theme toggle button
         Button themeToggleButton = findViewById(R.id.theme_toggle_button);
         themeToggleButton.setOnClickListener(v -> {
             Log.d("ThemeToggle", "Theme toggle button clicked");
@@ -50,17 +50,17 @@ public class MainActivity extends AppCompatActivity {
             int currentTheme = ThemeSetter.getThemePreference(MainActivity.this);
             int newTheme = (currentTheme == ThemeSetter.THEME_LIGHT) ? ThemeSetter.THEME_DARK : ThemeSetter.THEME_LIGHT;
 
-            // Save the new theme preference
+            // Saves the new theme preference
             ThemeSetter.setThemePreference(MainActivity.this, newTheme);
 
             // Debug log to confirm theme change
             Log.d("ThemeToggle", "Theme set to: " + (newTheme == ThemeSetter.THEME_DARK ? "Dark" : "Light"));
 
-            // Restart the application to apply the new theme
+            // Restarts the application to apply the new theme
             Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            finish(); // Optional: finish current activity to ensure it is not kept in the stack
+            finish(); // Finish current activity to ensure it is not kept in the stack
         });
 
         Button openNavButton = findViewById(R.id.open_nav_button);
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Find the Workouts button in the nav drawer
+        // Find the Workouts, Statistics & Goals button in the nav drawer
         Button workoutsButton = findViewById(R.id.workouts_button);
         workoutsButton.setOnClickListener(new View.OnClickListener() {
             @Override

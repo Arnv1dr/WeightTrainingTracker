@@ -11,7 +11,7 @@ public class ThemeSetter extends Application {
     public static final int THEME_LIGHT = 0;
     public static final int THEME_DARK = 1;
 
-    // Ensure this method is public
+    
     public static void applyTheme(Context context) {
         int theme = getThemePreference(context);
         if (theme == THEME_DARK) {

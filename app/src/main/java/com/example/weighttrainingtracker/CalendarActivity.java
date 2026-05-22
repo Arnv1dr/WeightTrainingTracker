@@ -56,7 +56,9 @@ public class CalendarActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
+        // findViewById = Getting references to UI elements from the layout
         calendarView = findViewById(R.id.calendar_view);
+        // Makes the week start on Monday instead of Sunday 
         calendarView.setFirstDayOfWeek(Calendar.MONDAY);
         workoutSpinner = findViewById(R.id.workout_spinner);
         setContainer = findViewById(R.id.set_container);
@@ -64,42 +66,45 @@ public class CalendarActivity extends BaseActivity {
         viewWorkoutButton = findViewById(R.id.view_workout_button);
         deleteLastSetButton = findViewById(R.id.delete_last_set_button);
 
+        // Initializes the side navigation drawer menu
         setupNavigationDrawer();
 
-        // Set up workout types spinner
+        // Setting up workout types for the dropdown menu
         List<String> workoutTypes = new ArrayList<>();
         workoutTypes.add("Select Workout");
         workoutTypes.add("Bench Press");
         workoutTypes.add("Squats");
         workoutTypes.add("Deadlifts");
-        // Add more workouts as needed
 
+        // Converts the list into dropdown items
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, workoutTypes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         workoutSpinner.setAdapter(adapter);
 
+        // Spinner for immediate reaction of workout selection (currently no use but was reused in StatisticsActivity)
         workoutSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Optionally handle workout type selection
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Handle no selection
             }
         });
 
-        // Set a listener to handle date selection
+        // Setting a listener to handle date selection
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             Calendar calendar = Calendar.getInstance();
             calendar.set(year, month, dayOfMonth);
+            // Converts the date into a specific format
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             selectedDate = dateFormat.format(calendar.getTime());
-            Log.d("CalendarActivity", "Selected date: " + selectedDate);  // Add this line for debugging
+            Log.d("CalendarActivity", "Selected date: " + selectedDate);  // Debugging help
+            // Loads workout data for the date clicked
             loadDataForSelectedDate();
         });
 
+        // Execute specific functions on button clicks
         saveButton.setOnClickListener(v -> saveDataForSelectedDate());
         viewWorkoutButton.setOnClickListener(v -> showWorkoutSummary());
         deleteLastSetButton.setOnClickListener(v -> deleteLastSet());
@@ -108,7 +113,9 @@ public class CalendarActivity extends BaseActivity {
     private void loadDataForSelectedDate() {
         Log.d(TAG, "Loading data for selected date: " + selectedDate);
 
+        // Pull saved text data from SharedPreferences 
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        // Each date is saved as a seperate key so each day has independent workouts
         String data = prefs.getString(DATA_KEY + selectedDate, "");
 
         Log.d(TAG, "Data: " + data);
@@ -117,7 +124,7 @@ public class CalendarActivity extends BaseActivity {
         setContainer.removeAllViews();
 
         if (!data.isEmpty()) {
-            // Add new set inputs based on saved data
+            // Saved text is split by lines
             String[] lines = data.split("\n");
             if (lines.length > 0) {
                 // Set workout type
@@ -136,7 +143,8 @@ public class CalendarActivity extends BaseActivity {
                             if (weightAndReps.length >= 2) {
                                 String weight = weightAndReps[0].replace("Weight: ", "").replace(" kg", "").trim();
                                 String reps = weightAndReps[1].replace("Reps: ", "").trim();
-
+                                
+                                // Extract weights and reps 
                                 View setView = getLayoutInflater().inflate(R.layout.set_input_layout, null);
                                 EditText weightInput = setView.findViewById(R.id.weight_input);
                                 EditText repsInput = setView.findViewById(R.id.reps_input);
@@ -151,7 +159,7 @@ public class CalendarActivity extends BaseActivity {
             }
         }
 
-        // Always add a new set input for additional entries
+        // Adds a new set input for additional entries
         addNewSetInput();
     }
 
@@ -165,11 +173,15 @@ public class CalendarActivity extends BaseActivity {
         Log.d(TAG, "Saving data for selected date: " + selectedDate);
 
         String selectedWorkout = workoutSpinner.getSelectedItem().toString();
+
+        // Notify the user when user tries to save workout data without selecting workout type
         if (selectedWorkout.equals("Select Workout")) {
             Toast.makeText(this, "Please select a workout", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // No date is selected when no date is clicked (can happen when user saves data for current day and 
+        // assumes default)
         if (selectedDate == null) {
             Calendar calendar = Calendar.getInstance();
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -199,50 +211,50 @@ public class CalendarActivity extends BaseActivity {
                 workoutSetsMap.putIfAbsent(currentWorkout, new ArrayList<>());
                 orderedWorkouts.add(currentWorkout);
             } else if (line.startsWith("Set ") && !currentWorkout.isEmpty()) {
-                // Add sets under the current workout
+                // Adds sets under the current workout
                 workoutSetsMap.get(currentWorkout).add(line);
             }
         }
 
-        // Check if the selected workout already exists in the map
+        // Checks if the selected workout already exists in the map
         if (workoutSetsMap.containsKey("Workout: " + selectedWorkout)) {
             workoutExists = true;
             currentWorkout = "Workout: " + selectedWorkout;
         } else {
-            // Add new workout type if it doesn't already exist
+            // Adds new workout type if it doesn't already exist
             currentWorkout = "Workout: " + selectedWorkout;
             orderedWorkouts.add(currentWorkout);
             workoutSetsMap.put(currentWorkout, new ArrayList<>());
         }
 
-        // Determine the next set number based on existing sets for this workout
+        // Determines the next set number based on existing sets for this workout
         int setNumber = workoutSetsMap.get(currentWorkout).size() + 1;
 
-        // Iterate over the setContainer to get weights and reps from each set input layout
+        // Iterates over the setContainer to get weights and reps from each set input layout
         for (int i = 0; i < setContainer.getChildCount(); i++) {
             View setView = setContainer.getChildAt(i);
 
             // Access weight and reps EditTexts
-            EditText weightEditText = setView.findViewById(R.id.weight_1);
-            EditText repsEditText = setView.findViewById(R.id.reps_1);
+            EditText weightEditText = setView.findViewById(R.id.weight_input);
+            EditText repsEditText = setView.findViewById(R.id.reps_input);
 
-            // Get the text from the EditTexts
+            // Gets the text from the EditTexts
             String weight = weightEditText.getText().toString().trim();
             String reps = repsEditText.getText().toString().trim();
 
-            // Ensure both weight and reps have values
+            // Ensures both weight and reps have values
             if (weight.isEmpty() || reps.isEmpty()) {
                 Toast.makeText(this, "Please fill in all weight and reps fields", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Append the set details to the new sets builder
+            // Appends the set details to the new sets builder
             newSetsBuilder.append("Set ").append(setNumber).append(": Weight: ").append(weight)
                     .append(" kg, Reps: ").append(reps).append("\n");
             setNumber++;
         }
 
-        // Add the new sets to the workout in the map
+        // Adds the new sets to the workout in the map
         workoutSetsMap.get(currentWorkout).addAll(Arrays.asList(newSetsBuilder.toString().trim().split("\n")));
 
         // Rebuild the data from the map
@@ -254,7 +266,7 @@ public class CalendarActivity extends BaseActivity {
             }
         }
 
-        // Save the updated data
+        // Saves the updated data
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(DATA_KEY + selectedDate, dataBuilder.toString().trim());
         editor.apply();
@@ -262,9 +274,9 @@ public class CalendarActivity extends BaseActivity {
         Toast.makeText(this, "Data saved for " + selectedDate, Toast.LENGTH_SHORT).show();
     }
 
-    // Helper method to determine the next set number for a workout type
+    // Helper method to determine the next set number for a workout type (Ended up not being used but kept for possible future updates/improvements)
     private int getNextSetNumber(String existingData, String selectedWorkout) {
-        int setNumber = 1; // Default set number
+        int setNumber = 1; 
 
         if (!existingData.isEmpty()) {
             String[] lines = existingData.split("\n");
@@ -272,11 +284,11 @@ public class CalendarActivity extends BaseActivity {
             for (String line : lines) {
                 if (line.equals("Workout: " + selectedWorkout)) {
                     isCorrectWorkout = true;
-                    setNumber = 1; // Reset set count within the correct workout section
+                    setNumber = 1; 
                 } else if (isCorrectWorkout && line.startsWith("Set ") && line.contains(": Weight:") && line.contains("Reps:")) {
                     setNumber++;
                 } else if (line.startsWith("Workout: ")) {
-                    isCorrectWorkout = false; // Exit workout section when a new workout starts
+                    isCorrectWorkout = false; 
                 }
             }
         }
@@ -286,7 +298,7 @@ public class CalendarActivity extends BaseActivity {
     private void showWorkoutSummary() {
         Log.d(TAG, "Show Workout Summary method called for date: " + selectedDate);
 
-        // Ensure selectedDate is not null; if it is, use the current date
+        // Ensures selectedDate is not null. If it is, use the current date
         if (selectedDate == null) {
             Calendar calendar = Calendar.getInstance();
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -301,13 +313,13 @@ public class CalendarActivity extends BaseActivity {
             return;
         }
 
-        // Inflate the dialog layout
+        // Popup window showing saved data text
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_workout_summary, null);
         TextView summaryTextView = dialogView.findViewById(R.id.summary_text_view);
 
-        // Set the summary text
+        // Sets the saved data text
         summaryTextView.setText(data);
 
         builder.setView(dialogView)
@@ -327,14 +339,14 @@ public class CalendarActivity extends BaseActivity {
             return;
         }
 
-        // Split data into lines
+        // Splits data into lines
         String[] lines = data.split("\n");
 
-        // Remove the last set line only
+        // Removes the last set line only
         StringBuilder updatedData = new StringBuilder();
         int lastSetIndex = -1;
 
-        // Identify the last set index
+        // Identies the last set index
         for (int i = lines.length - 1; i >= 0; i--) {
             if (lines[i].startsWith("Set ")) {
                 lastSetIndex = i;
@@ -342,36 +354,38 @@ public class CalendarActivity extends BaseActivity {
             }
         }
 
-        // Rebuild the data without the last set
+        // Rebuilds the data without the last set
         for (int i = 0; i < lines.length; i++) {
             if (i != lastSetIndex) {
                 updatedData.append(lines[i]).append("\n");
             }
         }
 
-        // Handle case where all sets have been deleted
+        // Handles cases where all sets have been deleted
         String finalData = updatedData.toString().trim();
 
         if (lastSetIndex == -1) {
-            // No sets were found, remove all data for the selected date
+            // If no sets were found, remove all data for the selected date
             SharedPreferences.Editor editor = prefs.edit();
-            editor.remove(DATA_KEY + selectedDate); // Remove all data for the selected date
+            editor.remove(DATA_KEY + selectedDate); 
             editor.apply();
             Toast.makeText(this, "No more sets for " + selectedDate, Toast.LENGTH_SHORT).show();
         } else if (finalData.startsWith("Workout: ") && finalData.length() > "Workout: ".length()) {
-            // Save updated data with the workout title and remaining sets
+            // Saves updated data with the workout title and remaining sets
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString(DATA_KEY + selectedDate, finalData);
             editor.apply();
             Toast.makeText(this, "Last set deleted for " + selectedDate, Toast.LENGTH_SHORT).show();
         } else {
-            // Save updated data
+            // Saves updated data
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString(DATA_KEY + selectedDate, finalData);
             editor.apply();
             Toast.makeText(this, "Last set deleted for " + selectedDate, Toast.LENGTH_SHORT).show();
         }
     }
+
+    // Method for debugging 
     private void displayDataForDate(String date) {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String savedData = prefs.getString(DATA_KEY + date, "");

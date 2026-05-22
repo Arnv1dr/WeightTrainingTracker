@@ -76,11 +76,12 @@ public class StatisticsActivity extends BaseActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Handle no selection
+                
             }
         });
     }
 
+    // Builds bar chart upon workoutType input and calculateWeeklyVolume output 
     private void updateChart(String workoutType) {
         List<BarEntry> entries = new ArrayList<>();
 
@@ -95,9 +96,10 @@ public class StatisticsActivity extends BaseActivity {
 
         BarData barData = new BarData(dataSet);
         barChart.setData(barData);
-        barChart.invalidate(); // Refresh the chart
+        barChart.invalidate(); 
     }
 
+    // Method for conducting getDateKeyForWeekDay & calculateDailyVolume
     private float calculateWeeklyVolume(String workoutType, int weekNumber) {
         SharedPreferences prefs = getSharedPreferences(CalendarActivity.PREFS_NAME, Context.MODE_PRIVATE);
         float totalVolume = 0f;
@@ -118,6 +120,7 @@ public class StatisticsActivity extends BaseActivity {
         return totalVolume;
     }
 
+    // Parsing and extraction method
     private float calculateDailyVolume(String dayData, String workoutType) {
         float dailyVolume = 0f;
         Log.d(TAG, "Day Data: " + dayData);
@@ -127,8 +130,8 @@ public class StatisticsActivity extends BaseActivity {
             String currentWorkout = null;
 
             for (String entry : entries) {
-                entry = entry.trim(); // Trim the entry to remove any leading or trailing spaces
-                if (entry.isEmpty()) continue; // Skip empty lines
+                entry = entry.trim(); 
+                if (entry.isEmpty()) continue; 
                 Log.d(TAG, "Entry: " + entry);
 
                 if (entry.startsWith("Workout: ")) {
@@ -175,30 +178,35 @@ public class StatisticsActivity extends BaseActivity {
         return dailyVolume;
     }
 
-    // Helper method to get the date key for a specific week and day (implement this based on your date format)
+    // Helper method to get the date key for a specific week and day 
     private String getDateKeyForWeekDay(int relativeWeek, int dayOfWeek) {
         Calendar calendar = Calendar.getInstance();
+
+        // Get current week number
         int currentWeekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
 
-        // Calculate the week number for the last 12 weeks
+        // Calculate the target week number for the last 12 weeks
         int targetWeekOfYear = currentWeekOfYear - (12 - relativeWeek);
 
+        // Move calendar to that week
         calendar.set(Calendar.WEEK_OF_YEAR, targetWeekOfYear);
-        // Adjust to start with Monday (1 = Sunday, 2 = Monday, ..., 7 = Saturday)
-        calendar.setFirstDayOfWeek(Calendar.MONDAY);
 
-        // Correct the offset: DAY_OF_WEEK for Monday is 2, so add (dayOfWeek + 2)
+        // Force monday as first day of the week
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
-        // Now set to the desired day of the week (0 = Monday, 6 = Sunday)
+        // Move to a specific weekday
         calendar.add(Calendar.DAY_OF_WEEK, dayOfWeek);
+
+        // Converting the date to storage key format
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String dateKey = dateFormat.format(calendar.getTime());
 
-        Log.d("StatisticsActivity", "Generated date key: " + dateKey); // Add this line
+        Log.d("StatisticsActivity", "Generated date key: " + dateKey); 
         return dateKey;
     }
 
+    // Debugging helper method 
     private void printAllSharedPreferencesData() {
         SharedPreferences prefs = getSharedPreferences(CalendarActivity.PREFS_NAME, Context.MODE_PRIVATE);
         Map<String, ?> allEntries = prefs.getAll();
@@ -207,13 +215,61 @@ public class StatisticsActivity extends BaseActivity {
         }
     }
 
-    private void testCalculateDailyVolume() {
-        String testDayData = "Workout: Bench Press\nSet 1: Weight: 120 kg, Reps: 8\n";
-        String testWorkoutType = "Bench Press";
-        float volume = calculateDailyVolume(testDayData, testWorkoutType);
-        Log.d(TAG, "Test Volume: " + volume);
+    // Unit Tests for the most critical method (calculateDailyVolume)
+
+    // ^Checks for the specific workout type string within all entries of a day / Takes the following
+    // two numbers and multiplies them / Adds all results and checks whether the math adds up
+    @Test
+    public void testCalculateDailyVolume() {
+    String data =
+        "Workout: Bench Press\n" +
+        "Set 1: Weight: 100 kg, Reps: 5\n" +
+        "Set 2: Weight: 80 kg, Reps: 10\n";
+    
+    String testWorkoutType = "Bench Press";
+
+    float result = calculateDailyVolume(data, testWorkoutType);
+
+    assertEquals(1300f, result, 0.01f);
     }
+
+    // Testing for ignoring wrong workout 
+    @Test
+public void testWorkoutFiltering() {
+    String data =
+            "Workout: Squats\n" +
+            "Set 1: Weight: 120 kg, Reps: 5\n";
+
+    float result = calculateDailyVolume(data, "Bench Press");
+
+    assertEquals(0f, result, 0.01f);
+    }
+
+    // Tests whether the method correctly seperates workout types
+    @Test
+public void testMultipleWorkouts() {
+    String data =
+            "Workout: Bench Press\n" +
+            "Set 1: Weight: 100 kg, Reps: 5\n" +
+            "Workout: Squats\n" +
+            "Set 1: Weight: 150 kg, Reps: 5\n";
+
+    float result = calculateDailyVolume(data, "Bench Press");
+
+    assertEquals(500f, result, 0.01f);
+    }
+
+    // Testing try and catch logic
+    @Test
+public void testMalformedData() {
+    String data =
+            "Workout: Bench Press\n" +
+            "Set 1: INVALID DATA\n";
+
+    float result = calculateDailyVolume(data, "Bench Press");
+
+    assertEquals(0f, result, 0.01f);
+    }
+
 }
 
-// ^Check for the specific workout type string within all entries of a week / Take the following
-// two numbers and multiply them / Add all results

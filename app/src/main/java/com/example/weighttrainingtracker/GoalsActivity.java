@@ -62,18 +62,21 @@ public class GoalsActivity extends BaseActivity {
 
         preferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
-        // Set up workout types spinner
+        // Creates a list of workouts in the dropdown menu
         List<String> workoutTypes = new ArrayList<>();
         workoutTypes.add("Select Workout");
         workoutTypes.add("Bench Press");
         workoutTypes.add("Squats");
         workoutTypes.add("Deadlifts");
-        // Add more workouts as needed
 
+
+        // Converts java data into visual UI elements
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, workoutTypes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         workoutSpinner.setAdapter(adapter);
 
+        // Listens to user selection of the drop down and loads the saved goal for the workout selected 
+        // + displays the calculated volume change of the last 2 weeks
         workoutSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -84,7 +87,7 @@ public class GoalsActivity extends BaseActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Handle no selection
+                
             }
         });
 
@@ -95,6 +98,9 @@ public class GoalsActivity extends BaseActivity {
         populateWeekSpinners();
         displayDefaultVolumeChange();
 
+        // Listeners that allow the user to select two weeks from the last 12 to be compared regarding volume change
+        // +2 because the spinner position starts at 0 and the current week is 1 (relative week = 1) therefore
+        // 0 + 2 = Last week, 0 + 3 = Week before last... 
         weekSpinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -120,6 +126,7 @@ public class GoalsActivity extends BaseActivity {
         });
     }
 
+    // Displays saved percentage goal for the selected workout by fetching from SharedPreferences (local storage)
     private void loadSavedGoal() {
         if (selectedWorkout != null && !selectedWorkout.equals("Select Workout")) {
             float savedGoal = preferences.getFloat(GOAL_KEY + selectedWorkout, 0);
@@ -127,6 +134,7 @@ public class GoalsActivity extends BaseActivity {
         }
     }
 
+    // Reads user input, validates input, converts text to float and stores input. 
     private void saveGoal() {
         String goalStr = goalInput.getText().toString();
         if (goalStr.isEmpty()) {
@@ -144,6 +152,7 @@ public class GoalsActivity extends BaseActivity {
     }
 
 
+    // Show recent progress (last two weeks) automatically 
     @SuppressLint("DefaultLocale")
     private void displayDefaultVolumeChange() {
         float volumeChange = calculateVolumeChangeForLastTwoWeeks();
@@ -151,13 +160,14 @@ public class GoalsActivity extends BaseActivity {
     }
 
     private float calculateVolumeChangeForLastTwoWeeks() {
-        int mostRecentWeek = 2;  // Week 1 represents the most recent week
-        int weekBeforeLast = 3;  // Week 2 represents the week before the most recent week
+        int mostRecentWeek = 2;  
+        int weekBeforeLast = 3;  
 
         float volumeLastWeek = calculateWeeklyVolume(selectedWorkout, mostRecentWeek);
         float volumeWeekBefore = calculateWeeklyVolume(selectedWorkout, weekBeforeLast);
         Log.d("GoalsActivity", "Volume Last Week: " + volumeLastWeek + " - Volume Week Before: " + volumeWeekBefore);
 
+        // Divide by 0 protection
         if (volumeWeekBefore == 0) {
             return 0.0f;
         }
@@ -168,7 +178,7 @@ public class GoalsActivity extends BaseActivity {
     private void populateWeekSpinners() {
         List<String> weekLabels = new ArrayList<>();
         for (int i = 1; i <= 12; i++) {
-            weekLabels.add("Week " + i);
+            weekLabels.add(i + "Week/s ago ");
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, weekLabels);
@@ -224,8 +234,8 @@ public class GoalsActivity extends BaseActivity {
             String currentWorkout = null;
 
             for (String entry : entries) {
-                entry = entry.trim(); // Trim the entry to remove any leading or trailing spaces
-                if (entry.isEmpty()) continue; // Skip empty lines
+                entry = entry.trim(); 
+                if (entry.isEmpty()) continue; 
                 Log.d(TAG, "Entry: " + entry);
 
                 if (entry.startsWith("Workout: ")) {
@@ -272,26 +282,26 @@ public class GoalsActivity extends BaseActivity {
         return dailyVolume;
     }
 
-    // Helper method to get the date key for a specific week and day (implement this based on your date format)
+    // Helper method to get the date key for a specific week and day 
     private String getDateKeyForWeekDay(int relativeWeek, int dayOfWeek) {
         Calendar calendar = Calendar.getInstance();
 
-        // Move the calendar back by (12 - relativeWeek) weeks to get the correct week in the past
-        calendar.add(Calendar.WEEK_OF_YEAR, -(relativeWeek - 1));  // relativeWeek 1 means the most recent week
+        
+        calendar.add(Calendar.WEEK_OF_YEAR, -(relativeWeek - 1));  
 
-        // Set the correct day of the week (Note: Calendar.DAY_OF_WEEK starts from Sunday)
+        
         calendar.setFirstDayOfWeek(Calendar.MONDAY);
 
-        // Correct the offset: DAY_OF_WEEK for Monday is 2, so add (dayOfWeek + 2)
+        
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
-        // Now set to the desired day of the week (0 = Monday, 6 = Sunday)
+        
         calendar.add(Calendar.DAY_OF_WEEK, dayOfWeek);
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String dateKey = dateFormat.format(calendar.getTime());
 
-        Log.d("GoalsActivity", "Generated date key: " + dateKey); // Log with the correct activity name
+        Log.d("GoalsActivity", "Generated date key: " + dateKey); 
         return dateKey;
     }
 }
